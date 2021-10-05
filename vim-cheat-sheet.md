@@ -158,3 +158,8 @@ touch .vimrc; mkdir .vim
 
 - `c + i + t` will remove the code between HTML tags, such as: `<div>Some content</div>`
 - `c + i + }` will remove the code inside of a JavaScript function
+  
+### Job
+  - to suspend vim press control + z
+  - to show up list of suspended jobs write in terminal jobs
+  - to run concrete job again write fg %[number]
