@@ -18,7 +18,6 @@ set showmode                    "Show current mode down the bottom
 set gcr=a:blinkon0              "Disable cursor blink
 set visualbell                  "No sounds
 set autoread                    "Reload files changed outside vim
-set clipboard=unnamed
 
 " This makes vim act like all other editors, buffers can
 " exist in the background without being in a window.
@@ -41,7 +40,7 @@ set noswapfile
 set nobackup
 set nowb
 
-" Persistent undo ---------------------- {{{
+" ================ Persistent Undo ==================
 " Keep undo history across sessions, by storing in file.
 " Only works all the time.
 if has('persistent_undo') && !isdirectory(expand('~').'/.vim/backups')
@@ -49,21 +48,12 @@ silent !mkdir ~/.vim/backups > /dev/null 2>&1
 set undodir=~/.vim/backups
 set undofile
 endif
-" }}}
 
-" Vim folding settings ---------------------- {{{
-set foldmethod=manual
+" ================ Folds ============================
 
-augroup filetype_vim
-    autocmd!
-    autocmd FileType vim setlocal foldmethod=marker
-augroup END
-
-nnoremap <silent> <Space> @=(foldlevel('.')?'za':"\<Space>")<CR>
-vnoremap <Space> zf
-" }}}
-
-
+set foldmethod=indent   "fold based on indent
+set foldnestmax=3       "deepest fold is 3 levels
+set nofoldenable        "dont fold by default
 
 "
 " ================ Scrolling ========================
@@ -102,6 +92,8 @@ set linebreak    "Wrap lines at convenient points
 " Window pane resizing
 nnoremap <silent> <Leader>[ :exe "resize " . (winheight(0) * 3/2)<CR>
 nnoremap <silent> <Leader>] :exe "resize " . (winheight(0) * 2/3)<CR>
+nnoremap <silent> <Leader>( :exe "resize " . (winwidth(0) * 3/2)<CR>
+nnoremap <silent> <Leader>) :exe "resize " . (winwidth(0) * 2/3)<CR>
 
 " ===== Seeing Is Believing =====
 " " Assumes you have a Ruby with SiB available in the PATH
@@ -123,17 +115,22 @@ nmap <leader>c :%.!seeing_is_believing --clean<CR>;
 "
 "  " Mark the current line for annotation
 "
-nnoremap <leader>m A # => <Esc>
+nmap <leader>m A # => <Esc>
 "
 "  " Mark the highlighted lines for annotation
 "
-vnoremap <leader>m :norm A # => <Esc>
+vmap <leader>m :norm A # => <Esc>
 
 autocmd StdinReadPre * let s:std_in=1
 autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
 
-noremap <Leader>y "+y
-noremap <Leader>d "+d
+map <C-m> :NERDTreeToggle<CR>
+map <C-l> :tabn<CR>
+map <C-h> :tabp<CR>
+map <C-t> :tabnew<CR>
+
+map <Leader>y "+y
+map <Leader>d "+d
 
 let g:tmux_navigator_no_mappings = 1
 
@@ -146,10 +143,10 @@ nnoremap <silent> {Previous-Mapping} :TmuxNavigatePrevious<cr>
 let g:spec_runner_dispatcher = "VtrSendCommand! {command}"
 
 " RSpec.vim mappings
-noremap <Leader>t :call RunCurrentSpecFile()<CR>
-noremap <Leader>s :call RunNearestSpec()<CR>
-noremap <Leader>l :call RunLastSpec()<CR>
-noremap <Leader>a :call RunAllSpecs()<CR>
+map <Leader>t :call RunCurrentSpecFile()<CR>
+map <Leader>s :call RunNearestSpec()<CR>
+map <Leader>l :call RunLastSpec()<CR>
+map <Leader>a :call RunAllSpecs()<CR>
 
 nnoremap <leader>irb :VtrOpenRunner {'orientation': 'h', 'percentage': 50, 'cmd': 'irb'}<cr>
 
@@ -248,3 +245,39 @@ autocmd BufWritePre *.js,*.jsx,*.mjs,*.ts,*.tsx,*.css,*.less,*.scss,*.json,*.gra
 
 " Because node_modules shouldn't be ctrlp'd
 let g:ctrlp_custom_ignore = 'node_modules\|DS_Store\|git'
+
+" ======Icons======
+
+" set guifont=Mononoki:h12
+
+" ======Color Scheme======
+
+colorscheme onedark
+
+let g:lightline = {
+      \ 'active': {
+      \   'left': [ [ 'mode', 'paste' ],
+      \             [ 'gitbranch', 'readonly', 'filename', 'modified' ] ]
+      \ },
+      \ 'component_function': {
+      \   'gitbranch': 'gitbranch#name'
+      \ },
+      \ }
+
+" ======For copy and paste======
+noremap <Leader>y "*y
+noremap <Leader>p "*p
+noremap <Leader>Y "+y
+noremap <Leader>P "+p
+
+" For dot indents
+set lcs+=space:·
+
+let g:VM_maps = {}
+let g:VM_maps = {}
+let g:VM_maps["Select All"]        = '<leader>a'
+let g:VM_maps["Visual All"]        = '<leader>a'
+let g:VM_maps["Align"]             = '<leader>A'
+let g:VM_maps["Add Cursor Down"]   = '<C-j>'
+let g:VM_maps["Add Cursor Up"]     = '<C-k>'
+
